@@ -1,0 +1,92 @@
+<% javascript_tag do %><%=
+<<-FILTER_JAVASCRIPT
+  function add_filter(select) {
+    selected_field = select.value
+    Element.show('tr_' + selected_field)
+    check_box = $('cb_' + selected_field);
+    check_box.checked = true;
+    toggle_filter(selected_field);
+    select.selectedIndex = 0;
+    
+    for (i=0; i < select.options.length; i++) {
+      if (select.options[i].value == selected_field) {
+        select.options[i].disabled = true;
+        return true;
+      }
+    }
+  }
+  
+  function toggle_filter(field) {
+    check_box = $('cb_' + field);
+    if (check_box.checked) {
+      Element.show("operators_" + field);
+      toggle_operator(field);
+    } else {
+      Element.hide("operators_" + field);
+      Element.hide("div_values_" + field);
+    }
+  }
+
+  function toggle_operator(field) {
+    // Should not depend on operator id
+    operator = $('operators_' + field);
+    switch (operator.value) {
+      // Should not call Adapter Directly
+      #{SomaticsFilterDev::Adapters::SearchlogicAdapter.operators_without_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
+        Element.hide("div_values_" + field);
+        break;
+      default:
+        Element.show("div_values_" + field);
+        break;
+    }
+  }
+
+  function toggle_multi_select(field) {
+      select = $('values_' + field);
+      if (select.multiple == true) {
+          select.multiple = false;
+      } else {
+          select.multiple = true;
+      }
+  }
+FILTER_JAVASCRIPT
+%><% end %>
+
+<% form_remote_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get}, :update => 'content' do |f| -%>
+<fieldset id="filters">
+  <legend>Filters</legend>
+  <table width="100%"><tr>
+    <td>
+      <table>
+        <% somatics_filter_query.each_fragment do |field_name, fragment| %>
+        <% f.fields_for field_name, fragment do |fragment_field| %>
+        <tr id="tr_<%= field_name%>" class="filter" <%= fragment.show? ? '' : 'style="display:none"' %>>
+          <td style="width:200px;">
+            <%= fragment_field.check_box :is_set, :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
+            <label><%= somatics_filter_query.model.human_attribute_name(field_name) %></label>
+          </td>
+          <td style="width:150px;">
+            <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [t(query), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
+          </td>
+          <td>
+            <div id="div_values_<%= field_name %>" style="display:none;">
+              <%= fragment.filter.value_field(fragment_field) %>
+            </div>
+            <% javascript_tag do %>toggle_filter('<%= field_name %>');<% end %>
+          </td>
+        </tr>
+        <% end %>
+        <% end %>
+      </table>
+    </td>
+    <td class="add-filter">
+      <%= 'Add Filter' %>:
+      <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|k, v| [k, k]})), :onchange => "add_filter(this);", :class => "select-small" %>
+    </td>
+  </tr></table>
+  <p class="buttons">
+    <%= link_to_function 'Apply', 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
+    <%= link_to 'Clear', url_for, :class => 'icon icon-reload' %>
+  </p>
+</fieldset>
+<% end %>
