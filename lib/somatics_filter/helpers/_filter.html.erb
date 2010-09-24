@@ -1,3 +1,5 @@
+<%= javascript_include_tag 'calendar_date_select/calendar_date_select' %>
+<%= stylesheet_link_tag 'calendar_date_select/plain', :cache => true %>
 <% javascript_tag do %><%=
 <<-FILTER_JAVASCRIPT
   function add_filter(select) {
@@ -28,15 +30,19 @@
   }
 
   function toggle_operator(field) {
-    // Should not depend on operator id
     operator = $('operators_' + field);
     switch (operator.value) {
-      // Should not call Adapter Directly
-      #{SomaticsFilterDev::Adapters::SearchlogicAdapter.operators_without_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
+      #{somatics_filter_query.adapter.operators_with_second_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
+        Element.show("div_values_" + field);
+        Element.show("div_values2_" + field);
+        break;
+      #{somatics_filter_query.adapter.operators_without_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
         Element.hide("div_values_" + field);
+        Element.hide("div_values2_" + field);
         break;
       default:
         Element.show("div_values_" + field);
+        Element.hide("div_values2_" + field);
         break;
     }
   }
@@ -68,7 +74,7 @@ FILTER_JAVASCRIPT
           <td style="width:150px;">
             <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [t(query), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
           </td>
-          <td>
+          <td style="width:330px;">
             <div id="div_values_<%= field_name %>" style="display:none;">
               <%= fragment.filter.value_field(fragment_field) %>
             </div>

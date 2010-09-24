@@ -4,7 +4,6 @@ module SomaticsFilter
       def self.included(base)
         base.send :extend, ClassMethods
         base.send :include, InstanceMethods
-        # FIXME It initialize it for ActiveRecord::Base only, @@available_filters should be a hash: {Model => [filters]}
         base.send :initialize_available_filters
       end
     end

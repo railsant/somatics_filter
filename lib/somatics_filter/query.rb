@@ -10,11 +10,28 @@ module SomaticsFilter
     end
 
     def execute
-      SomaticsFilter::Adapters::SearchlogicAdapter.search(self)
+      self.adapter.search(self)
     end
     
     def not_set_fragments
       @fragments.reject {|field_name, fragment| fragment.show? }
+    end
+    
+    def adapter
+      Query.adapter
+    end
+    
+    def self.adapter
+      @@adapter ||= SomaticsFilter::Adapters::SearchlogicAdapter
+    end
+    
+    def self.adapter=(adapter)
+      @@adapter = case adapter
+      when :searchlogic, :search_logic
+        SomaticsFilter::Adapters::SearchlogicAdapter
+      when :metasearch, :meta_search
+      else
+      end
     end
 
     private
@@ -26,13 +43,14 @@ module SomaticsFilter
       @model = model
       
       # Always initial fragments for filter by using available filters of model
-      # FIXME Ordering of Fragments
       @fragments = @model.available_filters.inject({}) {|h, filter| h[filter.field_name] = SomaticsFilter::Fragment.new(filter.to_fragment); h}
       @search_params.each do |field_name, options|
         next unless @fragments[field_name]
         @fragments[field_name].is_set = options['is_set']
         @fragments[field_name].operator = options['operator']
         @fragments[field_name].value = options['value']
+        @fragments[field_name].value1 = options['value1']
+        @fragments[field_name].value2 = options['value2']
       end
     end
   end
