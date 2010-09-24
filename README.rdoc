@@ -32,14 +32,15 @@ platform-independent.
 == Dependency
 
 SomaticsFilter depends on the use of searchlogic and calandar_date_select.
-* <b>Searchlogic</b> http://http://github.com/binarylogic/searchlogic
-* <b>CalendarDateSelect</b> http://github.com/timcharper/calendar_date_select
+* <b>Searchlogic</b>: http://github.com/binarylogic/searchlogic
+* <b>CalendarDateSelect</b>: http://github.com/timcharper/calendar_date_select
 
 SomaticsFilter can be used with SomaticsGenerator which handles all the front-end code generations.
 The only things needed to do is setting the available filters.
+* <b>SomaticsGenerator</b>: http://github.com/inspiresynergy/somatics_generator
 
 == Credits
 
 SomaticsFilter is developed by Inspire Synergy – Benjamin Wong, Gary Or and a whole bunch of cool contributors.
 
-Copyright (c) 2010 [name of plugin creator], released under the MIT license
+Copyright (c) 2010 Inspire Synergy Limited, released under the MIT license
