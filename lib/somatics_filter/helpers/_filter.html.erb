@@ -60,7 +60,7 @@ FILTER_JAVASCRIPT
 
 <% form_remote_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get}, :update => 'content' do |f| -%>
 <fieldset id="filters">
-  <legend>Filters</legend>
+  <legend><%= t('filters') %></legend>
   <table width="100%"><tr>
     <td>
       <table>
@@ -86,13 +86,13 @@ FILTER_JAVASCRIPT
       </table>
     </td>
     <td class="add-filter">
-      <%= 'Add Filter' %>:
-      <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|k, v| [k, k]})), :onchange => "add_filter(this);", :class => "select-small" %>
+      <%= t('add_filter') %>:
+      <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|field_name, fragment| [somatics_filter_query.model.human_attribute_name(field_name), field_name]})), :onchange => "add_filter(this);", :class => "select-small" %>
     </td>
   </tr></table>
   <p class="buttons">
-    <%= link_to_function 'Apply', 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
-    <%= link_to 'Clear', url_for, :class => 'icon icon-reload' %>
+    <%= link_to_function t('apply'), 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
+    <%= link_to t('clear'), url_for, :class => 'icon icon-reload' %>
   </p>
 </fieldset>
 <% end %>

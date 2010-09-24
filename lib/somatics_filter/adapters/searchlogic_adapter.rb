@@ -23,7 +23,7 @@ module SomaticsFilter
                 conditions["#{field_name}_before"] = fragment.value2
               rescue
               end
-            when 'apply'
+            when 'direct_apply'
               conditions["#{field_name}"] = true
             else
             end
@@ -32,18 +32,6 @@ module SomaticsFilter
         end
         
         # Return Array of available operators for a given field type supplied by searchlogic
-        # Integer
-        # => all, < (lt), <= (lte), = (eq), != (ne), >= (gte), >(gt)
-        # Float
-        # => all, < (lt), <= (lte), = (eq), != (ne), >= (gte), >(gt)
-        # String
-        # => 'like', 'not_like', 'equals', 'does_not_equal', 'null'
-        # Text
-        # => 'like', 'not_like'
-        # Boolean
-        # => 'yes', 'no'
-        # Date
-        # => 'before', 'after'
         def available_operators_of_filter_type(type)
           case type
           when :integer
@@ -61,7 +49,7 @@ module SomaticsFilter
           when :date
             ['all', 'on', 'before', 'after', 'between']
           when :custom
-            ['apply']
+            ['direct_apply']
           end
         end
         
@@ -89,7 +77,7 @@ module SomaticsFilter
         end
         
         def available_operators
-          ['lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'all', 'like', 'not_like', 'equals', 'does_not_equal', 'yes', 'no']
+          ['lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'all', 'like', 'not_like', 'equals', 'does_not_equal', 'yes', 'no', 'on', 'before', 'after', 'between', 'direct_apply']
         end
       end
     end
