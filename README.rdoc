@@ -1,6 +1,6 @@
 = SomaticsFilter
 
-Somatics Filter aims to add record filtering to Rails applications. It is easy-to-use, database- and 
+Somatics Filter aims to enable record filtering in the admin panel. It is easy-to-use, database- and 
 platform-independent.
 
 == Getting Started
@@ -27,7 +27,7 @@ platform-independent.
 4. Render the filter form in view
     # In index.html.erb
     <%= somatics_filter_for Post %>
-5. Enjoy
+5. Enjoy!
 
 == Dependency
 
