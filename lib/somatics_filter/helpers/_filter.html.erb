@@ -58,7 +58,7 @@
 FILTER_JAVASCRIPT
 %><% end %>
 
-<% form_remote_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get}, :update => 'content' do |f| -%>
+<% form_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get} do |f| -%>
 <fieldset id="filters">
   <legend><%= t('filters') %></legend>
   <table width="100%"><tr>
