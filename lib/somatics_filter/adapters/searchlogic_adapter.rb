@@ -9,11 +9,11 @@ module SomaticsFilter
             case fragment.operator
             when 'lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'like', 'not_like', 'equals', 'does_not_equal'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value
-            when 'yes'
+            when 'equals_true'
               conditions["#{field_name}_is"] = true
-            when 'no'
+            when 'equals_false'
               conditions["#{field_name}_is"] = false
-            when 'on'
+            when 'on_some_date'
               conditions["#{field_name}_is"] = fragment.value1
             when 'before', 'after'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value1
@@ -43,11 +43,11 @@ module SomaticsFilter
           when :text 
             ['like', 'not_like']
           when :boolean
-            ['yes', 'no']
+            ['equals_true', 'equals_false']
           when :list
             ['all', 'eq', 'ne']
           when :date
-            ['all', 'on', 'before', 'after', 'between']
+            ['all', 'on_some_date', 'before', 'after', 'between']
           when :custom
             ['direct_apply']
           end
@@ -69,15 +69,11 @@ module SomaticsFilter
         end
         
         def operators_without_value
-          ['all', 'yes', 'no']
+          ['all', 'equals_true', 'equals_false']
         end
         
         def available_filter_type
           [:integer, :float, :string, :text, :boolean, :list, :date, :custom]
-        end
-        
-        def available_operators
-          ['lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'all', 'like', 'not_like', 'equals', 'does_not_equal', 'yes', 'no', 'on', 'before', 'after', 'between', 'direct_apply']
         end
       end
     end

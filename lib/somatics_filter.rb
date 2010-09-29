@@ -3,3 +3,5 @@ require 'somatics_filter/helpers/somatics_filter_helper'
 
 ActiveRecord::Base.send :include, SomaticsFilter::ActiveRecord::CoreExt
 ActionController::Base.send :helper, SomaticsFilter::Helpers::SomaticsFilterHelper
+
+I18n.load_path += Dir[File.expand_path(File.dirname(__FILE__) + '/../config/locales/*.yml')]
