@@ -61,6 +61,15 @@
         select.multiple = true;
       }
   }
+  
+  function clear_query() {
+    new Ajax.Request('#{url_for}', {
+      method: 'get',
+      onSuccess: function(r) {
+        $('content').update(r.responseText);
+      }
+    });
+  }
 JAVASCRIPT
 ) %><% end %>
 
@@ -98,7 +107,7 @@ JAVASCRIPT
   </tr></table>
   <p class="buttons">
     <%= link_to_function t('apply', :scope => 'somatics_filter'), 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
-    <%= link_to t('clear', :scope => 'somatics_filter'), url_for, :class => 'icon icon-reload' %>
+    <%= link_to_function t('clear', :scope => 'somatics_filter'), 'clear_query();', :class => 'icon icon-reload' %>
   </p>
 </fieldset>
 <% end %>
