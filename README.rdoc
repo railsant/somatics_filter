@@ -1,11 +1,20 @@
 = SomaticsFilter
 
 Somatics Filter aims to enable record filtering in the admin panel. It is easy-to-use, database- and 
-platform-independent.
+platform-independent. Somatics Filter is now compatible with Rails 2 and Rails 3
 
 == Getting Started
 
 1. Installation
+    # Rails 2:
+    # In environment.rb, add
+    config.gem 'searchlogic'
+    
+    # Rails 3:
+    # In Gemfile
+    gem 'meta_search'
+
+    script/plugin install git://github.com/timcharper/calendar_date_select.git
     script/plugin install git://github.com/inspiresynergy/somatics_filter.git
 2. Specify available filters in model
     # We have the model
@@ -26,13 +35,14 @@ platform-independent.
     end
 4. Render the filter form in view
     # In index.html.erb
-    <%= somatics_filter_for Post %>
+    <%= somatics_filter_for :post %>
 5. Enjoy!
 
 == Dependency
 
-SomaticsFilter depends on the use of searchlogic and calandar_date_select.
+SomaticsFilter depends on the use of searchlogic/meta_search and calandar_date_select.
 * <b>Searchlogic</b>: http://github.com/binarylogic/searchlogic
+* <b>MetaSearch</b>: http://github.com/ernie/meta_search
 * <b>CalendarDateSelect</b>: http://github.com/timcharper/calendar_date_select
 
 SomaticsFilter can be used with SomaticsGenerator which handles all the front-end code generations.
