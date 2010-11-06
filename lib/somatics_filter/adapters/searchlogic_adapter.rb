@@ -64,6 +64,9 @@ module SomaticsFilter
           end
         end
         
+        def callback_for(filter, model)
+        end
+        
         def operators_with_second_value
           ['between']
         end

@@ -12,7 +12,8 @@ module SomaticsFilter
       def has_filter(field, type, options = {})
         # TODO Handling of Filter Duplication
         @@available_filters[self] ||= []
-        @@available_filters[self] << SomaticsFilter::Filter.new(field, type, options)
+        @@available_filters[self] << (filter = SomaticsFilter::Filter.new(field, type, options))
+        SomaticsFilter::Query.adapter.callback_for(filter, self)
       end
 
       def apply_query(params)

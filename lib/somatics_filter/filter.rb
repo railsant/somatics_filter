@@ -28,12 +28,10 @@ module SomaticsFilter
       @field.to_s
     end
     
-    # TODO Should return according to adapter in use
     def value_field(form_object)
       SomaticsFilter::Query.adapter.input_field_of_filter(self, form_object)
     end
     
-    # TODO Should return according to adapter in use
     def available_operators
       SomaticsFilter::Query.adapter.available_operators_of_filter_type(@type)
     end

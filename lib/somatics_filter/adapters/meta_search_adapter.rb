@@ -67,6 +67,13 @@ module SomaticsFilter
           end
         end
         
+        def callback_for(filter, model)
+          case filter.type
+          when :custom
+            model.send(:search_methods, filter.field.to_sym)
+          end
+        end
+        
         def operators_with_second_value
           ['between']
         end
