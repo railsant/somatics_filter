@@ -12,9 +12,9 @@ module SomaticsFilter
             when 'does_not_contain'
               conditions["#{field_name}_not_like"] = fragment.value
             when 'true'
-              conditions["#{field_name}_is"] = true
+              conditions["#{field_name}_eq"] = 'true'
             when 'false'
-              conditions["#{field_name}_is"] = false
+              conditions["#{field_name}_eq"] = 'false'
             when 'on'
               conditions["#{field_name}_after"] = fragment.value1
               conditions["#{field_name}_before"] = fragment.value1.to_date.tomorrow.to_s
