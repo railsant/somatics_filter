@@ -61,10 +61,19 @@
         select.multiple = true;
       }
   }
+
+  function submit_query_form() {
+    $('query_form').request({
+      onComplete: function(r) {
+        $('content').update(r.responseText);
+      }
+    });
+    return false;
+  }
 JAVASCRIPT
 ) %><% end %>
 
-<%= form_for somatics_filter_query, :as => :somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get} do |f| -%>
+<%= form_for somatics_filter_query, :as => :somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
 <fieldset id="filters">
   <legend><%= t('filters', :scope => 'somatics_filter') %></legend>
   <table width="100%"><tr>
@@ -97,7 +106,7 @@ JAVASCRIPT
     </td>
   </tr></table>
   <p class="buttons">
-    <%= link_to_function t('apply', :scope => 'somatics_filter'), 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
+    <%= link_to_function t('apply', :scope => 'somatics_filter'), 'submit_query_form();', :class => 'icon icon-checked' %>
     <%= link_to t('clear', :scope => 'somatics_filter'), url_for, :class => 'icon icon-reload' %>
   </p>
 </fieldset>

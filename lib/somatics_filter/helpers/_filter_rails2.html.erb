@@ -73,7 +73,7 @@
 FILTER_JAVASCRIPT
 %><% end %>
 
-<% form_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form()'} do |f| -%>
+<% form_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
 <fieldset id="filters">
   <legend><%= t('filters', :scope => 'somatics_filter') %></legend>
   <table width="100%"><tr>
