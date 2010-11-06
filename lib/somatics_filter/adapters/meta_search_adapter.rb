@@ -58,7 +58,7 @@ module SomaticsFilter
         
         def input_field_of_filter(filter, form)
           case filter.type
-          when :integer, :string, :text, :boolean
+          when :integer, :float, :string, :text, :boolean
             form.send(:text_field, :value)
           when :list
             form.send(:select, :value, filter.options[:values])

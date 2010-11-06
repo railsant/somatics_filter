@@ -34,15 +34,21 @@
     switch (operator.value) {
       #{somatics_filter_query.adapter.operators_with_second_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
         Element.show("div_values_" + field);
-        Element.show("div_values2_" + field);
+        if($("div_values2_" + field)) {
+          Element.show("div_values2_" + field);
+        }
         break;
       #{somatics_filter_query.adapter.operators_without_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
         Element.hide("div_values_" + field);
-        Element.hide("div_values2_" + field);
+        if($("div_values2_" + field)) {
+          Element.hide("div_values2_" + field);
+        }
         break;
       default:
         Element.show("div_values_" + field);
-        Element.hide("div_values2_" + field);
+        if($("div_values2_" + field)) {
+          Element.hide("div_values2_" + field);
+        }
         break;
     }
   }
@@ -60,7 +66,7 @@ FILTER_JAVASCRIPT
 
 <% form_for somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get} do |f| -%>
 <fieldset id="filters">
-  <legend><%= t('filters') %></legend>
+  <legend><%= t('filters', :scope => 'somatics_filter') %></legend>
   <table width="100%"><tr>
     <td>
       <table>
@@ -72,7 +78,7 @@ FILTER_JAVASCRIPT
             <label><%= somatics_filter_query.model.human_attribute_name(field_name) %></label>
           </td>
           <td style="width:150px;">
-            <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [t(query), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
+            <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
           </td>
           <td style="width:330px;">
             <div id="div_values_<%= field_name %>" style="display:none;">
@@ -86,13 +92,13 @@ FILTER_JAVASCRIPT
       </table>
     </td>
     <td class="add-filter">
-      <%= t('add_filter') %>:
+      <%= t('add_filter', :scope => 'somatics_filter') %>:
       <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|field_name, fragment| [somatics_filter_query.model.human_attribute_name(field_name), field_name]})), :onchange => "add_filter(this);", :class => "select-small" %>
     </td>
   </tr></table>
   <p class="buttons">
-    <%= link_to_function t('apply'), 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
-    <%= link_to t('clear'), url_for, :class => 'icon icon-reload' %>
+    <%= link_to_function t('apply', :scope => 'somatics_filter'), 'document.getElementById("query_form").submit();', :class => 'icon icon-checked' %>
+    <%= link_to t('clear', :scope => 'somatics_filter'), url_for, :class => 'icon icon-reload' %>
   </p>
 </fieldset>
 <% end %>

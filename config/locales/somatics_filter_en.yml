@@ -16,10 +16,6 @@ en:
     after: After
     between: Between
     direct_apply: Apply
-    like: Contains
-    not_like: Does not contain
-    equals: Equals
-    does_not_equal: Does not Equal
     apply: Apply
     clear: Clear
     filters: Filters

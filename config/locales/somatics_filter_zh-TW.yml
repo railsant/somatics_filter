@@ -16,10 +16,6 @@
     after: "在...後"
     between: 之間
     direct_apply: 使用
-    like: 包含
-    not_like: 不包含
-    equals: 等於
-    does_not_equal: 不等於
     apply: 確定
     clear: 清除
     filters: 篩選

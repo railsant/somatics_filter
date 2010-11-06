@@ -34,7 +34,9 @@
     switch (operator.value) {
       #{somatics_filter_query.adapter.operators_with_second_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
         Element.show("div_values_" + field);
-        Element.show("div_values2_" + field);
+        if($("div_values2_" + field)) {
+          Element.show("div_values2_" + field);
+        }
         break;
       #{somatics_filter_query.adapter.operators_without_value.inject('') {|str, operator| str + "case \"#{operator}\": "}}
         Element.hide("div_values_" + field);

@@ -7,20 +7,25 @@ module SomaticsFilter
           conditions = {}
           condition_fragments.each do |field_name, fragment|
             case fragment.operator
-            when 'lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'like', 'not_like', 'equals', 'does_not_equal'
+            when 'lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'contains'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value
-            when 'equals_true'
+            when 'does_not_contain'
+              conditions["#{field_name}_not_like"] = fragment.value
+            when 'true'
               conditions["#{field_name}_is"] = true
-            when 'equals_false'
+            when 'false'
               conditions["#{field_name}_is"] = false
-            when 'on_some_date'
-              conditions["#{field_name}_is"] = fragment.value1
-            when 'before', 'after'
+            when 'on'
+              conditions["#{field_name}_after"] = fragment.value1
+              conditions["#{field_name}_before"] = fragment.value1.to_date.tomorrow.to_s
+            when 'before'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value1
+            when 'after'
+              conditions["#{field_name}_#{fragment.operator}"] = fragment.value1.to_date.tomorrow.to_s
             when 'between'
               begin
                 conditions["#{field_name}_after"] = fragment.value1
-                conditions["#{field_name}_before"] = fragment.value2
+                conditions["#{field_name}_before"] = fragment.value2.to_date.tomorrow.to_s
               rescue
               end
             when 'direct_apply'
@@ -39,15 +44,15 @@ module SomaticsFilter
           when :float
             ['all', 'lt', 'lte', 'eq', 'ne', 'gte', 'gt']
           when :string
-            ['like', 'not_like', 'equals', 'does_not_equal']
+            ['contains', 'does_not_contain', 'eq', 'ne']
           when :text 
-            ['like', 'not_like']
+            ['contains', 'does_not_contain']
           when :boolean
-            ['equals_true', 'equals_false']
+            ['all', 'true', 'false']
           when :list
             ['all', 'eq', 'ne']
           when :date
-            ['all', 'on_some_date', 'before', 'after', 'between']
+            ['all', 'on', 'before', 'after', 'between']
           when :custom
             ['direct_apply']
           end
@@ -55,7 +60,7 @@ module SomaticsFilter
         
         def input_field_of_filter(filter, form)
           case filter.type
-          when :integer, :string, :text, :boolean
+          when :integer, :float, :string, :text, :boolean
             form.send(:text_field, :value)
           when :list
             form.send(:select, :value, filter.options[:values])
@@ -72,7 +77,7 @@ module SomaticsFilter
         end
         
         def operators_without_value
-          ['all', 'equals_true', 'equals_false']
+          ['all', 'true', 'false', 'direct_apply']
         end
         
         def available_filter_type
