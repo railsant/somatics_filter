@@ -1,23 +1,27 @@
 en:
-  all: All
-  lt: Less than
-  lte: Less than or Equal
-  eq: Equals
-  ne: Not Equal
-  gt: Greater than
-  gte: Greater than or Equal
-  like: Contains
-  not_like: Not Contain
-  equals: Equals
-  does_not_equal: Does not Equal
-  on_some_date: On
-  before: Before
-  after: After
-  between: Between
-  direct_apply: Apply
-  equals_true: Yes
-  equals_false: No
-  apply: Apply
-  clear: Clear
-  filters: Filters
-  add_filter: Add Filter
+  somatics_filter:
+    all: All
+    lt: "<"
+    lte: "<="
+    eq: Equals
+    ne: Not equal
+    gt: ">"
+    gte: ">="
+    contains: Contains
+    does_not_contain: Not contain
+    "true": "Yes"
+    "false": "No"
+    "on": "On"
+    before: Before
+    after: After
+    between: Between
+    direct_apply: Apply
+    like: Contains
+    not_like: Does not contain
+    equals: Equals
+    does_not_equal: Does not Equal
+    apply: Apply
+    clear: Clear
+    filters: Filters
+    add_filter: Add Filter
+    

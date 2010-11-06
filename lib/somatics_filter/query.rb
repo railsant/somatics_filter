@@ -30,6 +30,7 @@ module SomaticsFilter
       when :searchlogic, :search_logic
         SomaticsFilter::Adapters::SearchlogicAdapter
       when :metasearch, :meta_search
+        SomaticsFilter::Adapters::MetaSearchAdapter
       else
       end
     end

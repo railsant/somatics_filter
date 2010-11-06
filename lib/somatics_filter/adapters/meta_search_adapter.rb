@@ -9,20 +9,21 @@ module SomaticsFilter
             case fragment.operator
             when 'lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'contains', 'does_not_contain'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value
-            when 'equals_true'
+            when 'true'
               conditions["#{field_name}_eq"] = true
-            when 'equals_false'
+            when 'false'
               conditions["#{field_name}_eq"] = false
-            when 'on_some_date'
-              conditions["#{field_name}_eq"] = fragment.value1
+            when 'on'
+              conditions["#{field_name}_gte"] = fragment.value1.to_date.to_s
+              conditions["#{field_name}_lt"] = fragment.value1.to_date.tomorrow.to_s
             when 'before'
               conditions["#{field_name}_lt"] = fragment.value1
             when 'after'
               conditions["#{field_name}_gt"] = fragment.value1
             when 'between'
               begin
-                conditions["#{field_name}_lt"] = fragment.value1
-                conditions["#{field_name}_gt"] = fragment.value2
+                conditions["#{field_name}_gte"] = fragment.value1
+                conditions["#{field_name}_lte"] = fragment.value2.to_date.tomorrow.to_s
               rescue
               end
             when 'direct_apply'
@@ -33,7 +34,7 @@ module SomaticsFilter
           query.model.search(conditions)
         end
         
-        # Return Array of available operators for a given field type supplied by searchlogic
+        # Return Array of available operators for a given field type supplied by meta_search
         def available_operators_of_filter_type(type)
           case type
           when :integer
@@ -45,11 +46,11 @@ module SomaticsFilter
           when :text 
             ['contains', 'does_not_contain']
           when :boolean
-            ['equals_true', 'equals_false']
+            ['all', 'true', 'false']
           when :list
             ['all', 'eq', 'ne']
           when :date
-            ['all', 'on_some_date', 'before', 'after', 'between']
+            ['all', 'on', 'before', 'after', 'between']
           when :custom
             ['direct_apply']
           end
@@ -71,11 +72,11 @@ module SomaticsFilter
         end
         
         def operators_without_value
-          ['all', 'equals_true', 'equals_false']
+          ['all', 'true', 'false', 'direct_apply']
         end
         
         def available_filter_type
-          [:integer, :float, :string, :text, :boolean, :list, :date]
+          [:integer, :float, :string, :text, :boolean, :list, :date, :custom]
         end        
       end
     end
