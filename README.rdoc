@@ -38,6 +38,20 @@ platform-independent. Somatics Filter is now compatible with Rails 2 and Rails 3
     <%= somatics_filter_for :post %>
 5. Enjoy!
 
+== Advanced Use Cases
+    # Supported Filter Types: :integer, :float, :string, :text, :boolean, :list, :date, :custom
+
+    # List Filter: Allow User to select the matching value
+    has_filter :state, :list, :values => ['New', 'Drafted', 'Published']
+
+    # Default Filter: Filters that are set as default
+    # e.g. Filter Records with ID > 2 by default
+    has_filter :id, :integer, :default => true, :default_operator => 'gt', :default_value => '2'
+
+    # Custom Filter: Apply the named scope defined
+    scope :available, where(:state => 'available')
+    has_filter :available, :custom
+
 == Dependency
 
 SomaticsFilter depends on the use of searchlogic/meta_search and calandar_date_select.
