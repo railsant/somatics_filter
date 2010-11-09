@@ -45,8 +45,10 @@ platform-independent. Somatics Filter is now compatible with Rails 2 and Rails 3
     has_filter :state, :list, :values => ['New', 'Drafted', 'Published']
 
     # Default Filter: Filters that are set as default
-    # e.g. Filter Records with ID > 2 by default
-    has_filter :id, :integer, :default => true, :default_operator => 'gt', :default_value => '2'
+    has_filter :id, :integer, :default => true
+
+    # Set the Default Operator and Value
+    has_filter :name, :string, :default_operator => 'contains', :default_value => 'test'
 
     # Custom Filter: Apply the named scope defined
     scope :available, where(:state => 'available')
