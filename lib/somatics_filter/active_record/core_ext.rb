@@ -17,7 +17,7 @@ module SomaticsFilter
       end
 
       def apply_query(params)
-        query = SomaticsFilter::Query.new(params[:somatics_filter_query], self)
+        query = SomaticsFilter::Query.new(params, self)
         self.somatics_filter_query = query
         query.execute
       end
@@ -27,7 +27,7 @@ module SomaticsFilter
       end
       
       def somatics_filter_query
-        @@somatics_filter_query ||= SomaticsFilter::Query.new(nil, self)
+        @@somatics_filter_query ||= SomaticsFilter::Query.new({}, self)
       end
 
       def somatics_filter_query=(query)
@@ -37,6 +37,10 @@ module SomaticsFilter
       # Heroku attempts to call it multiple times
       def initialize_available_filters
         @@available_filters ||= {}
+      end
+      
+      def available_columns
+        column_names
       end
     end
 

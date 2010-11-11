@@ -1,6 +1,6 @@
 module SomaticsFilter
   class Query
-    attr_reader :fragments, :model
+    attr_reader :fragments, :model, :available_columns, :selected_columns
     
     def each_fragment
       sorted_fragments = @fragments.sort_by {|field_name, fragment| fragment.filter.order}
@@ -37,10 +37,11 @@ module SomaticsFilter
 
     private
     
-    # Initialize Query object with search params from form and model
+    # Initialize Query object with search params and column params from form and model
     # @fragments is used for form rendering and query conversion for backend search engine (e.g. searchlogic)
-    def initialize(search_params, model)
-      @search_params = search_params || {}
+    def initialize(params, model)
+      @search_params = (params[:somatics_filter_query][:search] rescue {})
+      @column_params = (params[:somatics_filter_query][:columns] rescue [])
       @model = model
       
       # Always initial fragments for filter by using available filters of model
@@ -53,6 +54,10 @@ module SomaticsFilter
         @fragments[field_name].value1 = options['value1']
         @fragments[field_name].value2 = options['value2']
       end
+      
+      columns = @column_params || []
+      @available_columns = @model.available_columns - columns
+      @selected_columns = columns
     end
   end
 end

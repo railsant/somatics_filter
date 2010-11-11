@@ -1,5 +1,6 @@
 <%= javascript_include_tag 'calendar_date_select/calendar_date_select' %>
 <%= stylesheet_link_tag 'calendar_date_select/plain' %>
+<%= javascript_include_tag 'somatics/select_list_move' %>
 <%= javascript_tag do %><%=raw(
 <<-JAVASCRIPT
   function add_filter(select) {
@@ -63,6 +64,7 @@
   }
   
   function submit_query_form() {
+    selectAllOptions("selected_columns");
     $('query_form').request({
       onComplete: function(r) {
         $('content').update(r.responseText);
@@ -84,40 +86,70 @@ JAVASCRIPT
 ) %><% end %>
 
 <%= form_for somatics_filter_query, :as => :somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
-<fieldset id="filters">
-  <legend><%= t('filters', :scope => 'somatics_filter') %></legend>
-  <table width="100%"><tr>
-    <td>
+  <%= f.fields_for :search do |search_form| %>
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);"><%= t('filters', :scope => 'somatics_filter') %></legend>
+      <div id="search_fieldset">
+        <table width="100%"><tr>
+          <td>
+            <table>
+              <% somatics_filter_query.each_fragment do |field_name, fragment| %>
+              <%= search_form.fields_for field_name, fragment do |fragment_field| %>
+                <tr id="tr_<%= field_name %>" class="filter" <%=raw fragment.show? ? '' : 'style="display:none"' %>>
+                  <td style="width:200px;">
+                    <%= fragment_field.check_box :is_set, :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
+                    <label><%= somatics_filter_query.model.human_attribute_name(field_name) %></label>
+                  </td>
+                  <td style="width:150px;">
+                    <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
+                  </td>
+                  <td style="width:330px;">
+                    <div id="div_values_<%= field_name %>" style="display:none;">
+                      <%=raw fragment.filter.value_field(fragment_field) %>
+                    </div>
+                    <%= javascript_tag do %>toggle_filter('<%= field_name %>');<% end %>
+                  </td>
+                </tr>
+              <% end %>
+              <% end %>
+            </table>
+          </td>
+          <td class="add-filter">
+            <%= t('add_filter', :scope => 'somatics_filter') %>:
+            <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|field_name, fragment| [somatics_filter_query.model.human_attribute_name(field_name), field_name]})), :onchange => "add_filter(this);", :class => "select-small" %>
+          </td>
+        </tr></table>
+      </div>
+    </fieldset>
+  <% end %>
+  <fieldset id="columns" class="collapsible">
+    <legend onclick="toggleFieldset(this);"><%= t('options', :scope => 'somatics_filter') %></legend>
+    <div id="column_fieldset">
       <table>
-        <% somatics_filter_query.each_fragment do |field_name, fragment| %>
-        <%= f.fields_for field_name, fragment do |fragment_field| %>
-        <tr id="tr_<%= field_name %>" class="filter" <%=raw fragment.show? ? '' : 'style="display:none"' %>>
-          <td style="width:200px;">
-            <%= fragment_field.check_box :is_set, :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
-            <label><%= somatics_filter_query.model.human_attribute_name(field_name) %></label>
-          </td>
-          <td style="width:150px;">
-            <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
-          </td>
-          <td style="width:330px;">
-            <div id="div_values_<%= field_name %>" style="display:none;">
-              <%=raw fragment.filter.value_field(fragment_field) %>
-            </div>
-            <%= javascript_tag do %>toggle_filter('<%= field_name %>');<% end %>
-          </td>
-        </tr>
-        <% end %>
-        <% end %>
+        <tbody>
+        	<tr>
+        	  <td style="width:20%;"><%= t('columns', :scope => 'somatics_filter') %></td>
+            <td style="padding-left:0">
+        		  <%= select_tag 'available_columns', options_for_select(somatics_filter_query.available_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :multiple => true, :size => 10, :style => "width:150px" %>
+        		</td>
+            <td align="center" valign="middle">
+        			<input type="button" value="&#8594;" onclick="moveOptions(this.form.available_columns, this.form.selected_columns);" /><br />
+        			<input type="button" value="&#8592;" onclick="moveOptions(this.form.selected_columns, this.form.available_columns);" />
+        		</td>
+        		<td>
+        		  <%= select_tag 'somatics_filter_query[columns]', options_for_select(somatics_filter_query.selected_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :id => 'selected_columns', :multiple => true, :size => 10, :style => "width:150px" %>
+        		</td>
+            <td align="center" valign="middle">
+        			<input type="button" value="&#8593;" onclick="moveOptionUp(this.form.selected_columns);" /><br />
+        			<input type="button" value="&#8595;" onclick="moveOptionDown(this.form.selected_columns);" />
+        		</td>
+        	</tr>
+      	</tbody>
       </table>
-    </td>
-    <td class="add-filter">
-      <%= t('add_filter', :scope => 'somatics_filter') %>:
-      <%= select_tag 'add_filter_select', options_for_select(['', ''] | (somatics_filter_query.not_set_fragments.collect {|field_name, fragment| [somatics_filter_query.model.human_attribute_name(field_name), field_name]})), :onchange => "add_filter(this);", :class => "select-small" %>
-    </td>
-  </tr></table>
+    </div>  
+  </fieldset>
   <p class="buttons">
     <%= link_to_function t('apply', :scope => 'somatics_filter'), 'submit_query_form();', :class => 'icon icon-checked' %>
     <%= link_to_function t('clear', :scope => 'somatics_filter'), 'clear_query();', :class => 'icon icon-reload' %>
   </p>
-</fieldset>
 <% end %>
