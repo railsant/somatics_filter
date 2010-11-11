@@ -17,6 +17,10 @@ module SomaticsFilter
       @fragments.reject {|field_name, fragment| fragment.show? }
     end
     
+    def columns_selected?
+      !@selected_columns.empty?
+    end
+    
     def adapter
       Query.adapter
     end
