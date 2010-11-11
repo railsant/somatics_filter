@@ -18,8 +18,8 @@ en:
     direct_apply: Apply
     apply: Apply
     clear: Clear
+    save: Save
     filters: Filters
     add_filter: Add Filter
     columns: Columns
     options: Options
-    

@@ -18,6 +18,7 @@
     direct_apply: 使用
     apply: 確定
     clear: 清除
+    save: 儲存
     filters: 篩選
     add_filter: 加入篩選項目
     columns: 欄目
