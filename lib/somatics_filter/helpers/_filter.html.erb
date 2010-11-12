@@ -80,13 +80,8 @@
     do {
       name = prompt("#{I18n.t('query_name', :scope => 'somatics_filter')}");  
     }while(name.length == 0);
-    $('query_form').request({
-      method: 'get',
-      parameters: {'somatics_filter_query[save]':name},
-      onComplete: function(r) {
-        $('content').update(r.responseText);
-      }
-    });
+    $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': 'somatics_filter_query[save]', 'value': name}));
+    $('query_form').submit();
     return false;
   }
   

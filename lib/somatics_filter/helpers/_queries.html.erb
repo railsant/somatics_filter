@@ -2,7 +2,7 @@
 <h3><%= t('saved_queries', :scope => 'somatics_filter') %></h3>
 <% queries.each do |query| -%>
 <%= link_to_function query.name, "apply_saved_query(#{query.id});"  %>
-<%= link_to_function image_tag('somatics/delete.png'), "delete_saved_query(#{query.id});" %>
+<%= link_to image_tag('somatics/delete.png'), params.merge!(:somatics_filter_query => query.id, :_delete => true) %>
 <br />
 <% end -%>
 <% end -%>
