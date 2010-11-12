@@ -44,13 +44,18 @@ module SomaticsFilter
     # Initialize Query object with search params and column params from form and model
     # @fragments is used for form rendering and query conversion for backend search engine (e.g. searchlogic)
     def initialize(params, model)
-      @search_params = (params[:somatics_filter_query][:search] rescue {})
-      @column_params = (params[:somatics_filter_query][:columns] rescue [])
+      if params[:somatics_filter_query] && params[:somatics_filter_query].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[:somatics_filter_query].to_i))
+        @search_params = saved_query.search_params
+        @column_params = saved_query.column_params
+      else
+        @search_params = (params[:somatics_filter_query][:search] rescue {})
+        @column_params = (params[:somatics_filter_query][:columns] rescue [])
+      end
       @model = model
       
       # Always initial fragments for filter by using available filters of model
       @fragments = @model.available_filters.inject({}) {|h, filter| h[filter.field_name] = SomaticsFilter::Fragment.new(filter.to_fragment); h}
-      @search_params.each do |field_name, options|
+      (@search_params || {}).each do |field_name, options|
         next unless @fragments[field_name]
         @fragments[field_name].is_set = options['is_set']
         @fragments[field_name].operator = options['operator']
@@ -62,6 +67,15 @@ module SomaticsFilter
       columns = @column_params || []
       @available_columns = @model.available_columns - columns
       @selected_columns = columns
+      
+      if params[:somatics_filter_query] && !params[:somatics_filter_query][:save].blank?
+        SomaticsFilter::SavedQuery.create({
+          :name => params[:somatics_filter_query][:save],
+          :query_class_name => model.model_name,
+          :search_params => @search_params,
+          :column_params => @column_params
+        })
+      end
     end
   end
 end

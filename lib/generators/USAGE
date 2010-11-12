@@ -1,0 +1,8 @@
+Description:
+    Generate migration for somatics filter.
+
+Example:
+    rails generate somatics_filter:install
+
+    This will create:
+        db/migrate/xxxxxx_create_somatics_filter_queries.rb

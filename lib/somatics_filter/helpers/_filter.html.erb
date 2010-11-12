@@ -66,6 +66,23 @@
   function submit_query_form() {
     selectAllOptions("selected_columns");
     $('query_form').request({
+      method: 'get',
+      onComplete: function(r) {
+        $('content').update(r.responseText);
+      }
+    });
+    return false;
+  }
+  
+  function submit_and_save_query() {
+    selectAllOptions("selected_columns");
+    var name;
+    do {
+      name = prompt("#{I18n.t('query_name', :scope => 'somatics_filter')}");  
+    }while(name.length == 0);
+    $('query_form').request({
+      method: 'get',
+      parameters: {'somatics_filter_query[save]':name},
       onComplete: function(r) {
         $('content').update(r.responseText);
       }
@@ -151,6 +168,6 @@ JAVASCRIPT
   <p class="buttons">
     <%= link_to_function t('apply', :scope => 'somatics_filter'), 'submit_query_form();', :class => 'icon icon-checked' %>
     <%= link_to_function t('clear', :scope => 'somatics_filter'), 'clear_query();', :class => 'icon icon-reload' %>
-    <%= link_to_function t('save', :scope => 'somatics_filter'), 'submit_query_form();', :class => 'icon icon-save' %>
+    <%= link_to_function t('save', :scope => 'somatics_filter'), 'submit_and_save_query();', :class => 'icon icon-save' %>
   </p>
 <% end %>

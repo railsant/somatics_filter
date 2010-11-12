@@ -1,0 +1,22 @@
+<% unless queries.empty? -%>
+<h3><%= t('saved_queries', :scope => 'somatics_filter') %></h3>
+<% queries.each do |query| -%>
+<%= link_to_function query.name, "apply_saved_query(#{query.id});"  %>
+<br />
+<% end -%>
+<% end -%>
+
+<%= javascript_tag do %><%=raw(
+<<-JAVASCRIPT
+  function apply_saved_query(query_id) {
+    new Ajax.Request('#{url_for}', {
+      method: 'get',
+      parameters: {'somatics_filter_query': query_id},
+      onComplete: function(r) {
+        $('content').update(r.responseText);
+      }
+    });
+    return false;
+  }
+JAVASCRIPT
+) %><% end %>

@@ -23,3 +23,5 @@ en:
     add_filter: Add Filter
     columns: Columns
     options: Options
+    query_name: Query Name
+    saved_queries: Saved Queries

@@ -23,3 +23,5 @@
     add_filter: 加入篩選項目
     columns: 欄目
     options: 其他
+    query_name: 查詢名稱
+    saved_queries: 已儲存查詢
