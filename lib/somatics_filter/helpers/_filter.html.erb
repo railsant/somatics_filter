@@ -110,7 +110,7 @@ JAVASCRIPT
                 <tr id="tr_<%= field_name %>" class="filter" <%=raw fragment.show? ? '' : 'style="display:none"' %>>
                   <td style="width:200px;">
                     <%= fragment_field.check_box :is_set, :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
-                    <label><%= somatics_filter_query.model.human_attribute_name(field_name) %></label>
+                    <label><%= somatics_filter_query.model.human_attribute_name(fragment.filter.name) %></label>
                   </td>
                   <td style="width:150px;">
                     <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>

@@ -28,6 +28,14 @@ module SomaticsFilter
       @field.to_s
     end
     
+    def name
+      @options[:name] || field_name
+    end
+    
+    def values
+      @options[:values].is_a?(Proc) ? @options[:values].call : @options[:values]
+    end
+    
     def value_field(form_object)
       SomaticsFilter::Query.adapter.input_field_of_filter(self, form_object)
     end
