@@ -6,6 +6,7 @@ class CreateSomaticsFilterQueries < ActiveRecord::Migration
       t.text     :search_params
       t.text     :column_params
       t.string   :whodunnit
+      t.boolean  :default
       
       t.timestamps
     end

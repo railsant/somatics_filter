@@ -19,6 +19,7 @@
     apply: 確定
     clear: 清除
     save: 儲存
+    save_as_default: 儲存為預設
     filters: 篩選
     add_filter: 加入篩選項目
     columns: 欄目

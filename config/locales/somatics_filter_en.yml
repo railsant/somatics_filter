@@ -19,6 +19,7 @@ en:
     apply: Apply
     clear: Clear
     save: Save
+    save_as_default: Save as Default
     filters: Filters
     add_filter: Add Filter
     columns: Columns

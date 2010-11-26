@@ -45,6 +45,7 @@ module SomaticsFilter
     # Initialize Query object with search params and column params from form and model
     # @fragments is used for form rendering and query conversion for backend search engine (e.g. meta_search)
     def initialize(params, model)
+      @model = model
       if params[:somatics_filter_query] && params[:somatics_filter_query].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[:somatics_filter_query].to_i))
         if params[:_delete]
           saved_query.destroy
@@ -55,8 +56,11 @@ module SomaticsFilter
       else
         @search_params = (params[:somatics_filter_query][:search] rescue {})
         @column_params = (params[:somatics_filter_query][:columns] rescue [])
+        if default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s)
+          @search_params = default_query.search_params if @search_params.blank?
+          @column_params = default_query.column_params if @column_params.blank?
+        end
       end
-      @model = model
       
       # Always initial fragments for filter by using available filters of model
       @fragments = @model.available_filters.inject({}) {|h, filter| h[filter.field_name] = SomaticsFilter::Fragment.new(filter.to_fragment); h}
@@ -75,12 +79,20 @@ module SomaticsFilter
       @selected_columns = @column_params
       
       if params[:somatics_filter_query] && !params[:somatics_filter_query][:save].blank?
-        SomaticsFilter::SavedQuery.create({
-          :name => params[:somatics_filter_query][:save],
-          :query_class_name => model.model_name,
-          :search_params => @search_params,
-          :column_params => @column_params
-        })
+        if params[:somatics_filter_query][:save][:default] && (default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s))
+          default_query.update_attributes({
+            :search_params => @search_params,
+            :column_params => @column_params
+          })
+        else
+          SomaticsFilter::SavedQuery.create({
+            :name => params[:somatics_filter_query][:save][:name] || 'Default',
+            :default => !!params[:somatics_filter_query][:save][:default],
+            :query_class_name => @model.model_name.to_s,
+            :search_params => @search_params,
+            :column_params => @column_params
+          })
+        end
       end
     end
   end
