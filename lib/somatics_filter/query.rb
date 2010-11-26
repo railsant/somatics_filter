@@ -1,6 +1,16 @@
 module SomaticsFilter
   class Query
-    ParamName = :f
+    ParamNames = {
+      :filter  => :f,
+      :search  => :s,
+      :columns => :c,
+      :is_set  => :is,
+      :operator => :o,
+      :value => :v,
+      :value1 => :v1,
+      :value2 => :v2
+    }
+
     attr_reader :fragments, :model, :available_columns, :selected_columns
     
     def each_fragment
@@ -45,8 +55,11 @@ module SomaticsFilter
     # Initialize Query object with search params and column params from form and model
     # @fragments is used for form rendering and query conversion for backend search engine (e.g. meta_search)
     def initialize(params, model)
-      @model = model
-      key = SomaticsFilter::Query::ParamName
+      key = SomaticsFilter::Query::ParamNames[:filter]
+      search_key = SomaticsFilter::Query::ParamNames[:search]
+      columns_key = SomaticsFilter::Query::ParamNames[:columns]
+
+      @model = model      
       if params[key] && params[key].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[key].to_i))
         if params[:_delete]
           saved_query.destroy
@@ -55,8 +68,8 @@ module SomaticsFilter
           @column_params = saved_query.column_params
         end
       else
-        @search_params = (params[key][:search] rescue {})
-        @column_params = (params[key][:columns] rescue [])
+        @search_params = (params[key][search_key] rescue {})
+        @column_params = (params[key][columns_key] rescue [])
         if default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s)
           @search_params = default_query.search_params if @search_params.blank?
           @column_params = default_query.column_params if @column_params.blank?
@@ -64,15 +77,15 @@ module SomaticsFilter
       end
       
       # Always initial fragments for filter by using available filters of model
-      @fragments = @model.available_filters.inject({}) {|h, filter| h[filter.field_name] = SomaticsFilter::Fragment.new(filter.to_fragment); h}
+      @fragments = @model.available_filters.inject({}) {|h, filter| h[filter.field_name] = filter.to_fragment; h}
       @search_params ||= {}
       @search_params.each do |field_name, options|
         next unless @fragments[field_name]
-        @fragments[field_name].is_set = options['is_set']
-        @fragments[field_name].operator = options['operator']
-        @fragments[field_name].value = options['value']
-        @fragments[field_name].value1 = options['value1']
-        @fragments[field_name].value2 = options['value2']
+        @fragments[field_name].is_set   = options[SomaticsFilter::Query::ParamNames[:is_set]]
+        @fragments[field_name].operator = options[SomaticsFilter::Query::ParamNames[:operator]]
+        @fragments[field_name].value    = options[SomaticsFilter::Query::ParamNames[:value]]
+        @fragments[field_name].value1   = options[SomaticsFilter::Query::ParamNames[:value1]]
+        @fragments[field_name].value2   = options[SomaticsFilter::Query::ParamNames[:value2]]
       end
       
       @column_params ||= []

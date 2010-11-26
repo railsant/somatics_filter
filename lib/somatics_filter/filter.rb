@@ -4,9 +4,15 @@ module SomaticsFilter
     
     # FIXME value1 and value2 are specific fields that are required by some filter type, not all contain these values
     def to_fragment
-      {'is_set' => self.is_default? ? '1' : '0', 'operator' => self.default_operator, 'value' => self.default_value, 'value1' => self.default_value, 'value2' => self.default_value, 'filter' => self}
+      SomaticsFilter::Fragment.new({
+        SomaticsFilter::Query::ParamNames[:is_set]   => self.is_default? ? '1' : '0',
+        SomaticsFilter::Query::ParamNames[:operator] => self.default_operator,
+        SomaticsFilter::Query::ParamNames[:value]    => self.default_value,
+        SomaticsFilter::Query::ParamNames[:value1]   => self.default_value,
+        SomaticsFilter::Query::ParamNames[:value2]   => self.default_value,
+        :filter => self
+      })
     end
-    
 
     def is_default?
       !!@options[:default]

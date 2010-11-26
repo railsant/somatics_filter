@@ -2,7 +2,7 @@
 <h3><%= t('saved_queries', :scope => 'somatics_filter') %></h3>
 <% queries.each do |query| -%>
 <%= link_to_function query.name, "apply_saved_query(#{query.id});"  %>
-<%= link_to image_tag('somatics/delete.png'), params.merge!(SomaticsFilter::Query::ParamName => query.id, :_delete => true) %>
+<%= link_to image_tag('somatics/delete.png'), params.merge!(SomaticsFilter::Query::ParamNames[:filter] => query.id, :_delete => true) %>
 <br />
 <% end -%>
 <% end -%>
@@ -12,7 +12,7 @@
   function apply_saved_query(query_id) {
     new Ajax.Request(window.location.pathname, {
       method: 'get',
-      parameters: {'#{SomaticsFilter::Query::ParamName.to_s}': query_id},
+      parameters: {'#{SomaticsFilter::Query::ParamNames[:filter].to_s}': query_id},
       onComplete: function(r) {
         $('content').update(r.responseText);
       }
@@ -24,7 +24,7 @@
     if(confirm('Are you sure?')) {
       new Ajax.Request(window.location.pathname, {
         method: 'get',
-        parameters: {'#{SomaticsFilter::Query::ParamName.to_s}': query_id, '_delete': true},
+        parameters: {'#{SomaticsFilter::Query::ParamNames[:filter].to_s}': query_id, '_delete': true},
         onComplete: function(r) {
         }
       });      

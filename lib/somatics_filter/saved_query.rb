@@ -8,7 +8,7 @@ module SomaticsFilter
     scope :of_class, lambda {|class_name| where(:query_class_name => class_name, :default => false)}
     
     def to_params
-      {:search => search_params, :columns => column_params}
+      {SomaticsFilter::Query::ParamNames[:search] => search_params, SomaticsFilter::Query::ParamNames[:columns] => column_params}
     end
     
     def self.default_query_of(class_name)

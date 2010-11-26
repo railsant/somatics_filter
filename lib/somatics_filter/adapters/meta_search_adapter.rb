@@ -65,13 +65,13 @@ module SomaticsFilter
         def input_field_of_filter(filter, form)
           case filter.type
           when :integer, :float, :string, :text, :boolean
-            form.send(:text_field, :value)
+            form.send(:text_field, SomaticsFilter::Query::ParamNames[:value])
           when :list
             options = {:id => "values_#{filter.field_name}", :class => 'select-small', :style => "vertical-align: top;"}
             options.merge!({:multiple => true}) if form.object.value.is_a?(Array)
-            form.send(:select, :value, filter.values, {}, options)
+            form.send(:select, SomaticsFilter::Query::ParamNames[:value], filter.values, {}, options)
           when :date
-            "#{form.send(:calendar_date_select, :value1, :style => 'width:120px;')}<span id=\"div_values2_#{filter.field_name}\"> and #{form.send(:calendar_date_select, :value2, :style => 'width:120px;')}</span>"
+            "#{form.send(:calendar_date_select, SomaticsFilter::Query::ParamNames[:value1], :style => 'width:120px;')}<span id=\"div_values2_#{filter.field_name}\"> and #{form.send(:calendar_date_select, SomaticsFilter::Query::ParamNames[:value2], :style => 'width:120px;')}</span>"
           end
         end
         

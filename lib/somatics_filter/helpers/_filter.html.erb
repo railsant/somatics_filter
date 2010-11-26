@@ -79,12 +79,12 @@
     selectAllOptions("selected_columns");
     var name;
     if(as_default) {
-      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamName.to_s}[save][default]', 'value': true}));
+      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamNames[:filter].to_s}[save][default]', 'value': true}));
     } else {
       do {
         name = prompt("#{I18n.t('query_name', :scope => 'somatics_filter')}");
       } while(name.length == 0);
-      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamName.to_s}[save][name]', 'value': name}));
+      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamNames[:filter].to_s}[save][name]', 'value': name}));
     }
     $('query_form').submit();
     return false;
@@ -102,8 +102,8 @@
 JAVASCRIPT
 ) %><% end %>
 
-<%= form_for somatics_filter_query, :as => SomaticsFilter::Query::ParamName, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
-  <%= f.fields_for :search do |search_form| %>
+<%= form_for somatics_filter_query, :as => SomaticsFilter::Query::ParamNames[:filter], :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
+  <%= f.fields_for SomaticsFilter::Query::ParamNames[:search] do |search_form| %>
     <fieldset id="filters" class="collapsible">
       <legend onclick="toggleFieldset(this);"><%= t('filters', :scope => 'somatics_filter') %></legend>
       <div id="search_fieldset">
@@ -114,11 +114,11 @@ JAVASCRIPT
               <%= search_form.fields_for field_name, fragment do |fragment_field| %>
                 <tr id="tr_<%= field_name %>" class="filter" <%=raw fragment.show? ? '' : 'style="display:none"' %>>
                   <td style="width:200px;">
-                    <%= fragment_field.check_box :is_set, :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
+                    <%= fragment_field.check_box SomaticsFilter::Query::ParamNames[:is_set], :id => "cb_#{field_name}", :onclick => "toggle_filter('#{field_name}');" %>
                     <label><%= somatics_filter_query.model.human_attribute_name(fragment.filter.name) %></label>
                   </td>
                   <td style="width:150px;">
-                    <%= fragment_field.select :operator, fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
+                    <%= fragment_field.select SomaticsFilter::Query::ParamNames[:operator], fragment.filter.available_operators.collect {|query| [I18n.t(query, :scope => 'somatics_filter'), query]}, {}, :id => "operators_#{field_name}", :class => "select-small", :style => "vertical-align: top;", :onchange => "toggle_operator('#{field_name}');" %>
                   </td>
                   <td style="width:330px;">
                     <div id="div_values_<%= field_name %>" style="display:none;">
@@ -155,7 +155,7 @@ JAVASCRIPT
         			<input type="button" value="&#8592;" onclick="moveOptions(this.form.selected_columns, this.form.available_columns);" />
         		</td>
         		<td>
-        		  <%= select_tag "#{SomaticsFilter::Query::ParamName.to_s}[columns]", options_for_select(somatics_filter_query.selected_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :id => 'selected_columns', :multiple => true, :size => 10, :style => "width:150px" %>
+        		  <%= select_tag "#{SomaticsFilter::Query::ParamNames[:filter].to_s}[#{SomaticsFilter::Query::ParamNames[:columns].to_s}]", options_for_select(somatics_filter_query.selected_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :id => 'selected_columns', :multiple => true, :size => 10, :style => "width:150px" %>
         		</td>
             <td align="center" valign="middle">
         			<input type="button" value="&#8593;" onclick="moveOptionUp(this.form.selected_columns);" /><br />

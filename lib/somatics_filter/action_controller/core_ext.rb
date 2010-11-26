@@ -18,7 +18,7 @@ module SomaticsFilter
         #   2. Session (for index action only)
         def handle_somatics_filter_query
           if action_name == 'index'
-            if query_hash = params[SomaticsFilter::Query::ParamName]
+            if query_hash = params[SomaticsFilter::Query::ParamNames[:filter]]
               store_last_query
             else
               if params[:_clear]
@@ -32,7 +32,7 @@ module SomaticsFilter
         
         def store_last_query
           session[:somatics_filter_query] ||= {}
-          session[:somatics_filter_query][controller_name] = params[SomaticsFilter::Query::ParamName]
+          session[:somatics_filter_query][controller_name] = params[SomaticsFilter::Query::ParamNames[:filter]]
         end
         
         def clear_last_query
@@ -42,7 +42,7 @@ module SomaticsFilter
         
         def load_last_query_to_params
           if session[:somatics_filter_query] && session[:somatics_filter_query][controller_name]
-            params[SomaticsFilter::Query::ParamName] = session[:somatics_filter_query][controller_name]
+            params[SomaticsFilter::Query::ParamNames[:filter]] = session[:somatics_filter_query][controller_name]
           end
         end
       end
