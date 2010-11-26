@@ -140,9 +140,9 @@ JAVASCRIPT
       </div>
     </fieldset>
   <% end %>
-  <fieldset id="columns" class="collapsible <%= raw('collapsed') unless somatics_filter_query.columns_selected? %>">
+  <fieldset id="columns" class="collapsible collapsed">
     <legend onclick="toggleFieldset(this);"><%= t('options', :scope => 'somatics_filter') %></legend>
-    <div id="column_fieldset" <%= raw('style="display:none;"') unless somatics_filter_query.columns_selected? %>>
+    <div id="column_fieldset" style="display:none;">
       <table>
         <tbody>
         	<tr>
