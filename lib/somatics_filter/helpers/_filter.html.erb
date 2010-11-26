@@ -79,12 +79,12 @@
     selectAllOptions("selected_columns");
     var name;
     if(as_default) {
-      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': 'somatics_filter_query[save][default]', 'value': true}));
+      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamName.to_s}[save][default]', 'value': true}));
     } else {
       do {
         name = prompt("#{I18n.t('query_name', :scope => 'somatics_filter')}");
       } while(name.length == 0);
-      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': 'somatics_filter_query[save][name]', 'value': name}));
+      $('query_form').appendChild(new Element('input', {'type': 'hidden', 'name': '#{SomaticsFilter::Query::ParamName.to_s}[save][name]', 'value': name}));
     }
     $('query_form').submit();
     return false;
@@ -102,7 +102,7 @@
 JAVASCRIPT
 ) %><% end %>
 
-<%= form_for somatics_filter_query, :as => :somatics_filter_query, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
+<%= form_for somatics_filter_query, :as => SomaticsFilter::Query::ParamName, :url => url_for, :html => {:id => 'query_form', :method => :get, :onsubmit => 'submit_query_form();'} do |f| -%>
   <%= f.fields_for :search do |search_form| %>
     <fieldset id="filters" class="collapsible">
       <legend onclick="toggleFieldset(this);"><%= t('filters', :scope => 'somatics_filter') %></legend>
@@ -155,7 +155,7 @@ JAVASCRIPT
         			<input type="button" value="&#8592;" onclick="moveOptions(this.form.selected_columns, this.form.available_columns);" />
         		</td>
         		<td>
-        		  <%= select_tag 'somatics_filter_query[columns]', options_for_select(somatics_filter_query.selected_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :id => 'selected_columns', :multiple => true, :size => 10, :style => "width:150px" %>
+        		  <%= select_tag "#{SomaticsFilter::Query::ParamName.to_s}[columns]", options_for_select(somatics_filter_query.selected_columns.collect {|column| [somatics_filter_query.model.human_attribute_name(column), column]}), :id => 'selected_columns', :multiple => true, :size => 10, :style => "width:150px" %>
         		</td>
             <td align="center" valign="middle">
         			<input type="button" value="&#8593;" onclick="moveOptionUp(this.form.selected_columns);" /><br />

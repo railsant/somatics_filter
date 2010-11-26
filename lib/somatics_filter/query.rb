@@ -1,6 +1,6 @@
 module SomaticsFilter
   class Query
-    ParamName = :somatics_filter_query
+    ParamName = :f
     attr_reader :fragments, :model, :available_columns, :selected_columns
     
     def each_fragment
@@ -46,7 +46,8 @@ module SomaticsFilter
     # @fragments is used for form rendering and query conversion for backend search engine (e.g. meta_search)
     def initialize(params, model)
       @model = model
-      if params[:somatics_filter_query] && params[:somatics_filter_query].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[:somatics_filter_query].to_i))
+      key = SomaticsFilter::Query::ParamName
+      if params[key] && params[key].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[key].to_i))
         if params[:_delete]
           saved_query.destroy
         else
@@ -54,8 +55,8 @@ module SomaticsFilter
           @column_params = saved_query.column_params
         end
       else
-        @search_params = (params[:somatics_filter_query][:search] rescue {})
-        @column_params = (params[:somatics_filter_query][:columns] rescue [])
+        @search_params = (params[key][:search] rescue {})
+        @column_params = (params[key][:columns] rescue [])
         if default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s)
           @search_params = default_query.search_params if @search_params.blank?
           @column_params = default_query.column_params if @column_params.blank?
@@ -78,16 +79,16 @@ module SomaticsFilter
       @available_columns = @model.available_columns - @column_params
       @selected_columns = @column_params
       
-      if params[:somatics_filter_query] && !params[:somatics_filter_query][:save].blank?
-        if params[:somatics_filter_query][:save][:default] && (default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s))
+      if params[key] && !params[key][:save].blank?
+        if params[key][:save][:default] && (default_query = SomaticsFilter::SavedQuery.default_query_of(@model.model_name.to_s))
           default_query.update_attributes({
             :search_params => @search_params,
             :column_params => @column_params
           })
         else
           SomaticsFilter::SavedQuery.create({
-            :name => params[:somatics_filter_query][:save][:name] || 'Default',
-            :default => !!params[:somatics_filter_query][:save][:default],
+            :name => params[key][:save][:name] || 'Default',
+            :default => !!params[key][:save][:default],
             :query_class_name => @model.model_name.to_s,
             :search_params => @search_params,
             :column_params => @column_params

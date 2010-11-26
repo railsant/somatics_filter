@@ -42,7 +42,7 @@ module SomaticsFilter
         
         def load_last_query_to_params
           if session[:somatics_filter_query] && session[:somatics_filter_query][controller_name]
-            params[:somatics_filter_query] = session[:somatics_filter_query][controller_name]
+            params[SomaticsFilter::Query::ParamName] = session[:somatics_filter_query][controller_name]
           end
         end
       end
