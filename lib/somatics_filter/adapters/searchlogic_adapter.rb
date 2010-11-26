@@ -63,7 +63,7 @@ module SomaticsFilter
           when :integer, :float, :string, :text, :boolean
             form.send(:text_field, :value)
           when :list
-            form.send(:select, :value, filter.options[:values])
+            form.send(:select, :value, filter.values)
           when :date
             "#{form.send(:calendar_date_select, :value1, :style => 'width:120px;')}<span id=\"div_values2_#{filter.field_name}\"> and #{form.send(:calendar_date_select, :value2, :style => 'width:120px;')}</span>"
           end

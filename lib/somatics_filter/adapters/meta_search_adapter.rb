@@ -7,7 +7,13 @@ module SomaticsFilter
           conditions = {}
           condition_fragments.each do |field_name, fragment|
             case fragment.operator
-            when 'lt', 'lte', 'eq', 'ne', 'gte', 'gt', 'contains', 'does_not_contain'
+            when 'eq'
+              operator = fragment.value.is_a?(Array) ? 'in' : 'eq'
+              conditions["#{field_name}_#{operator}"] = fragment.value
+            when 'ne'
+              operator = fragment.value.is_a?(Array) ? 'ni' : 'ne'
+              conditions["#{field_name}_#{operator}"] = fragment.value              
+            when 'lt', 'lte', 'gte', 'gt', 'contains', 'does_not_contain'
               conditions["#{field_name}_#{fragment.operator}"] = fragment.value
             when 'true'
               conditions["#{field_name}_eq"] = true
@@ -61,7 +67,9 @@ module SomaticsFilter
           when :integer, :float, :string, :text, :boolean
             form.send(:text_field, :value)
           when :list
-            form.send(:select, :value, filter.values)
+            options = {:id => "values_#{filter.field_name}", :class => 'select-small', :style => "vertical-align: top;"}
+            options.merge!({:multiple => true}) if form.object.value.is_a?(Array)
+            form.send(:select, :value, filter.values, {}, options)
           when :date
             "#{form.send(:calendar_date_select, :value1, :style => 'width:120px;')}<span id=\"div_values2_#{filter.field_name}\"> and #{form.send(:calendar_date_select, :value2, :style => 'width:120px;')}</span>"
           end
