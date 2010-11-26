@@ -90,7 +90,7 @@ module SomaticsFilter
           ['all', 'true', 'false', 'direct_apply']
         end
         
-        def available_filter_type
+        def available_filter_types
           [:integer, :float, :string, :text, :boolean, :list, :date, :custom]
         end        
       end

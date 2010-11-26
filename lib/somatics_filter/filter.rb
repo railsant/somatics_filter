@@ -47,9 +47,12 @@ module SomaticsFilter
     private
 
     def initialize(field, type, options = {})
+      raise SomaticsFilter::Filter::InvalidType unless SomaticsFilter::Query.adapter.available_filter_types.include?(type)
       @field = field
       @type  = type
       @options = options
     end
+    
+    class InvalidType < Exception; end
   end
 end
