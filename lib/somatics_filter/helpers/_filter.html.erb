@@ -87,7 +87,7 @@
   }
   
   function clear_query() {
-    new Ajax.Request('#{url_for}', {
+    new Ajax.Request('#{url_for(:_clear => true)}', {
       method: 'get',
       onSuccess: function(r) {
         $('content').update(r.responseText);

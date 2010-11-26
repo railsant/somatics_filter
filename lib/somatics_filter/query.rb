@@ -1,5 +1,6 @@
 module SomaticsFilter
   class Query
+    ParamName = :somatics_filter_query
     attr_reader :fragments, :model, :available_columns, :selected_columns
     
     def each_fragment
@@ -42,7 +43,7 @@ module SomaticsFilter
     private
     
     # Initialize Query object with search params and column params from form and model
-    # @fragments is used for form rendering and query conversion for backend search engine (e.g. searchlogic)
+    # @fragments is used for form rendering and query conversion for backend search engine (e.g. meta_search)
     def initialize(params, model)
       if params[:somatics_filter_query] && params[:somatics_filter_query].is_a?(String) && (saved_query = SomaticsFilter::SavedQuery.find_by_id(params[:somatics_filter_query].to_i))
         if params[:_delete]
